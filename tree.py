@@ -128,9 +128,23 @@ class Tree():
         while my_stack2:
             print my_stack2.pop().get()
 
+    def queue_trvalsal(self, root):
+        temp_node = root
+        my_stack = []
+        while temp_node or my_stack:
+            if temp_node:
+                print temp_node.get()
+                if temp_node.l_child:
+                    my_stack.append(temp_node.l_child)
+                if temp_node.r_child:
+                    my_stack.append(temp_node.r_child)
+            if my_stack == []:
+                return
+            temp_node = my_stack.pop(0)
+
 
 if __name__ == '__main__':
     tree = Tree()
     for i in range(10):
         tree.add_node(Node(i))
-    tree.stack_postorder_trvalsal(tree.root)
+    tree.queue_trvalsal(tree.root)
