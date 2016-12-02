@@ -50,6 +50,18 @@ def optimal_iteration(capacity, wNumbers, w, v):
     return maxV[capacity][wNumbers], maxIndex
 
 
+class node():
+    def __init__(self, op=0,  value=0, capacity=0):
+        self.__optimal = op
+        self.__value = value
+        self.__capacity = capacity
+        self.__index = []
+
+
+def optimal_dps_tree(capacity, wNumbers, w, v):
+    return 0
+
+
 def test():
     v = [5, 6, 3, 1]
     w = [4, 5, 2, 1]
