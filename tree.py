@@ -21,6 +21,7 @@ class Tree():
     # 初始化一棵树
     def __init__(self, node=None):
         self.root = node
+        self.reroot = self.root
 
     def add_node(self, node):
         my_queue = []
@@ -38,6 +39,56 @@ class Tree():
             my_queue.append(temp_node.l_child)
             my_queue.append(temp_node.r_child)
             temp_node = my_queue.pop(0)
+
+    def get_deep(self, total):
+            fac = 1
+            total = total+1
+            times = 0
+            while fac <= total:
+                fac = 2*fac
+                times = times + 1
+            return times
+
+    def create_by_preorder(self, capacity):
+            '''将capacity数组按照先序创建二叉树'''
+            length = len(capacity)
+            # print 'length',length
+            if length <= 0:
+                return None
+            '''计算可以创建树的深度－层数'''
+            deep_nums = self.get_deep(length)
+            # print 'deep_nums', deep_nums
+            self.root = Node(capacity[0])
+            # temp_node = self.root
+            # print capacity[0]
+            if length == 1:
+                return
+            '''先在来根据二叉树来估算左右元素个数'''
+            '''计算最下层个数bottom_numers'''
+            temp = pow(2,(deep_nums-1))
+            # print 'temp', temp
+            bottom_numers = length - (temp-1)
+            left_numbers = 0
+            '''计算左右各占几个数'''
+            if bottom_numers >= temp/2:
+                left_numbers = temp-1
+            else:
+                left_numbers = temp-1 - (temp/2-bottom_numers)
+            '''这样可以计算出右子树个数'''
+            # right_numbers = length-1-left_numbers
+            # self.root = temp_node.l_child
+            left_capacity = capacity[1:(left_numbers+1)]
+            print left_capacity
+            left_tree = Tree()
+            right_tree = Tree()
+            self.root.l_child = left_tree.root
+            self.root.r_child = right_tree.root
+            left_tree.create_by_preorder(left_capacity)
+            # self.root = temp_node
+            # self.root = temp_node.r_child
+            right_capacity = capacity[(left_numbers+1):]
+            right_tree.create_by_preorder(right_capacity)
+            # self.root = temp_node
 
     def recur_preorder_trvalsal(self, root):
         '''递归实现先序遍历'''
@@ -145,6 +196,5 @@ class Tree():
 
 if __name__ == '__main__':
     tree = Tree()
-    for i in range(10):
-        tree.add_node(Node(i))
-    tree.queue_trvalsal(tree.root)
+    tree.create_by_preorder(range(10))
+    tree.recur_preorder_trvalsal(tree.root)

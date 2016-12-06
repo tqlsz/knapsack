@@ -51,15 +51,27 @@ def optimal_iteration(capacity, wNumbers, w, v):
 
 
 class node():
-    def __init__(self, op=0,  value=0, capacity=0):
-        self.__optimal = op
-        self.__value = value
-        self.__capacity = capacity
-        self.__index = []
+    def __init__(self, op=0,  value=0, capacity=0, wNumbers=0):
+        '''最优值'''
+        self.optimal = op
+        '''节点值'''
+        self.value = value
+        '''节点容量'''
+        self.capacity = capacity
+        '''记录节点未选元素的位置，第i个记录为i'''
+        self.index = []
 
 
-def optimal_dps_tree(capacity, wNumbers, w, v):
-    return 0
+class optimal_dps_tree(capacity, wNumbers, w, v):
+    def __init__(self, node=None):
+        self.root = node
+
+    def add_node(self, node):
+        if self.root is None:
+            self.root = node
+            return
+
+
 
 
 def test():
