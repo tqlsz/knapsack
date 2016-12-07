@@ -4,15 +4,16 @@
 
 
 class Node():
-    def __init__(self, x=-1, r_child=None, l_child=None):
+    def __init__(self, x=-1,index = 0, r_child=None, l_child=None):
         self.__x = x
+        self.index = index
         self.l_child = l_child
         self.r_child = r_child
 
     def get(self):
         return self.__x
 
-    def set(self, x):
+    def setx(self, x):
         self.__x = x
 # 树类
 
@@ -21,7 +22,6 @@ class Tree():
     # 初始化一棵树
     def __init__(self, node=None):
         self.root = node
-        self.reroot = self.root
 
     def add_node(self, node):
         my_queue = []
@@ -52,19 +52,16 @@ class Tree():
     def create_by_preorder(self, capacity):
             '''将capacity数组按照先序创建二叉树'''
             length = len(capacity)
-            # print 'length',length
             if length <= 0:
                 return None
             '''计算可以创建树的深度－层数'''
             deep_nums = self.get_deep(length)
             self.root = Node(capacity[0])
-            # temp_node = self.root
             if length == 1:
                 return
             '''先在来根据二叉树来估算左右元素个数'''
             '''计算最下层个数bottom_numers'''
             temp = pow(2, (deep_nums-1))
-            # print 'temp', temp
             bottom_numers = length - (temp-1)
             left_numbers = 0
             '''计算左右各占几个数'''
@@ -184,8 +181,34 @@ class Tree():
                 return
             temp_node = my_stack.pop(0)
 
+    def create_preorder(self, deep_nums):
+        if self.root is None:
+            self.root = Node(0)
+        left_tree = Tree()
+        left_tree.root = Node(1)
+        left_tree.root.index = self.root.index + 1
+        if left_tree.root.index > deep_nums:
+            return
+        left_tree.create_preorder(deep_nums)
+        self.root.l_child = left_tree.root
+        right_tree = Tree()
+        right_tree.root = Node(0)
+        right_tree.root.index = self.root.index + 1
+        right_tree.create_preorder(deep_nums)
+        self.root.r_child = right_tree.root
+
+    def create_preorder1(self, root, deep_nums):
+        root.l_child = Node(1)
+        root.l_child.index = root.index+1
+        if root.l_child.index < deep_nums:
+            self.create_preorder1(root.l_child, deep_nums)
+        root.r_child = Node(0)
+        root.r_child.index = root.index+1
+        if root.r_child.index < deep_nums:
+            self.create_preorder1(root.r_child, deep_nums)
 
 if __name__ == '__main__':
     tree = Tree()
-    tree.create_by_preorder(range(10))
-    tree.queue_trvalsal(tree.root)
+    tree.root = Node(0)
+    tree.create_preorder1(tree.root, 20)
+    tree.stack_preorder_trvalsal(tree.root)
