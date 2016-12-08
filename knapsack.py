@@ -50,8 +50,8 @@ def optimal_iteration(capacity, wNumbers, w, v):
     return maxV[capacity][wNumbers], maxIndex
 
 
-class node():
-    def __init__(self, op=0,  value=0, capacity=0, wNumbers=0):
+class Node():
+    def __init__(self, op=0,  value=0, capacity=0, wNumbers=0, l_child=None, r_child=None):
         '''最优值'''
         self.optimal = op
         '''节点值'''
@@ -59,19 +59,49 @@ class node():
         '''节点容量'''
         self.capacity = capacity
         '''记录节点未选元素的位置，第i个记录为i'''
-        self.index = []
+        self.index = 0
+        self.l_child = l_child
+        self.r_child = r_child
 
 
-class optimal_dps_tree(capacity, wNumbers, w, v):
-    def __init__(self, node=None):
+class Optimal_dps_tree():
+    def __init__(self, node=None, capacity=0, w=None, v=None):
         self.root = node
+        self.capacity = capacity
+        '''重量序列'''
+        self.w = w
+        '''价值序列'''
+        self.v = v
+        '''记录解的最大值'''
+        self.maxV = 0
 
     def add_node(self, node):
         if self.root is None:
             self.root = node
             return
 
+    def recur_create_preorder(self, root):
+        '''通过递归使用合适的节点创建树'''
+        if root is None:
+            return
+        '''需要一系列计算来创造节点'''
+        root.l_child = Node()
+        root.l_child.index = root.index + 1
+        '''根据index来计算最优值'''
+        if root.l_child.index < 3:
+            self.recur_create_preorder(root.l_child)
+        root.r_child = Node()
+        root.r_child.index = root.index + 1
+        if root.r_child.index < 3:
+            self.recur_create_preorder(root.r_child)
 
+    def recur_preorder_trvalsal(self, root):
+        '''递归实现先序遍历'''
+        if root is None:
+            return
+        print root.index
+        self.recur_preorder_trvalsal(root.l_child)
+        self.recur_preorder_trvalsal(root.r_child)
 
 
 def test():
@@ -84,4 +114,10 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    v = [5, 6, 3, 1]
+    tree = Optimal_dps_tree()
+    tree.root = Node(0)
+    tree.root.value = 0
+    tree.root.capacity =
+    tree.recur_create_preorder(tree.root)
+    tree.recur_preorder_trvalsal(tree.root)

@@ -210,5 +210,5 @@ class Tree():
 if __name__ == '__main__':
     tree = Tree()
     tree.root = Node(0)
-    tree.create_preorder1(tree.root, 20)
+    tree.create_preorder1(tree.root, 2)
     tree.stack_preorder_trvalsal(tree.root)
