@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import knapsack
+import sys
 from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
-
+sys.setrecursionlimit(1500)
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
 
@@ -28,10 +29,14 @@ def solve_it(input_data):
     # weight = 0
 
     taken = [0]*len(items)
-    print taken, item_count
+    # print taken, item_count
     # ******
     j = item_count
-    value, taken = knapsack.optimal_iteration(capacity, j, [x[2] for x in items], [x[1] for x in items])
+    root = knapsack.Node(0, 0, capacity)
+    tree = knapsack.Optimal_dps_tree(root, capacity,\
+            [x[2] for x in items], [x[1] for x in items])
+    tree.recur_create_preorder(tree.root)
+    value= tree.maxV
 
     '''
     for item in items:
