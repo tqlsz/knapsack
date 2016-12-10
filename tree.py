@@ -207,8 +207,12 @@ class Tree():
         if root.r_child.index < deep_nums:
             self.create_preorder1(root.r_child, deep_nums)
 
+def test():
+    for i in range(100000000):
+        pass
+
 if __name__ == '__main__':
-    tree = Tree()
-    tree.root = Node(0)
-    tree.create_preorder1(tree.root, 2)
-    tree.stack_preorder_trvalsal(tree.root)
+    test()
+    print "sdfsdfsdfsd"
+    while 1:
+        print '1'

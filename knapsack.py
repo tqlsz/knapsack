@@ -70,6 +70,7 @@ class Optimal_dps_tree():
         self.capacity = capacity
         '''重量序列'''
         self.w = w
+        self.min_w = min(w)
         '''价值序列'''
         self.v = v
         '''记录解的最大值'''
@@ -88,17 +89,31 @@ class Optimal_dps_tree():
         len1 = len(weights)
         len2 = len(values)
         if len1 != len2:
-            return
+            return None
+        if weights is None or weights == [] or values is None:
+            return 0,0
+        maxV = 0
         vw = map(lambda v1, w1: (v1, w1), values, weights)
         vw.sort(lambda x, y: cmp(x[1]*0.1*10/x[0], y[1]*0.1*10/y[0]))
-        maxV = 0
         for i in range(len1):
             if capacity < vw[i][1]:
                 maxV += capacity*0.1*10/vw[i][1]*vw[i][0]
-                return maxV
+                break
             else:
                 maxV += vw[i][0]
                 capacity -= vw[i][1]
+        min_weights = min(weights)
+        '''找出重量最轻，价格最贵的那个'''
+        return maxV,min_weights
+
+    def get_maxV_by_w(self, capacity, weights, values):
+        '''如果capacity小于最小重量的两倍，找出重量小于capacity，最大v'''
+        if capacity >= 2*min(weights):
+            return
+        maxV = 0
+        for (w1, v1) in zip(weights, values):
+            if w1 <= capacity:
+                maxV = max(maxV, v1)
         return maxV
 
     def recur_create_preorder(self,  root):
@@ -107,36 +122,51 @@ class Optimal_dps_tree():
             return
         '''需要一系列计算来创造节点'''
         '''满足一定条件才创建左节点，不然返回'''
-        capacity = root.capacity - self.w[root.index]
-        if capacity >= 0:
-            value = root.value + self.v[root.index]
-            index = root.index + 1
-            if self.maxV < value:
-                self.maxV = value
-                print value, index
-                self.max_index = index
-            '''计算最优解'''
-            op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
-            print 'op', op
-            '''如果已经算出的极值小于最优解'''
-            if self.maxV < op:
-                root.l_child = Node(op, value, capacity, index)
-                '''根据index来计算最优值'''
-                if root.l_child.index < self.deep_tree:
-                    self.recur_create_preorder(root.l_child)
-
-        '''满足一定条件才能创建右节点，不然返回'''
         capacity = root.capacity
-        if capacity > 0:
+        index = root.index
+        if capacity < 2*min(self.w[index:]):
+            '''算法优化:如果capacity小于重量数组中最小数两倍，则只能选取'''
+            '''其中小于capacity，价值最高的v'''
+            max_v = self.get_maxV_by_w(capacity, self.w[index:], self.v[index:])
+            value = root.value + max_v
+            print value
+            op = value
+            root.l_child = Node(op, value, capacity, index+1)
+            self.maxV = max(self.maxV, value)
+        else:
+            capacity = root.capacity - self.w[root.index]
+            if capacity >= 0:
+                index = root.index + 1
+                max_value = self.get_max_value(capacity, self.w[index:], self.v[index:])
+                value = root.value + self.v[root.index]
+                op = value + max_value[0]
+                if self.maxV < value:
+                    self.maxV = value
+                self.max_index = index
+                # print 'op', op
+                '''如果已经算出的极值小于最优解'''
+                if self.maxV < op:
+                    root.l_child = Node(op, value, capacity, index)
+                    '''根据index来计算最优值'''
+                    if root.l_child.index < self.deep_tree:
+                        #print 'sdfsdf', capacity, max_value
+                        if capacity >= max_value[1]:
+                            self.recur_create_preorder(root.l_child)
+
+            '''满足一定条件才能创建右节点，不然返回'''
+            capacity = root.capacity
             value = root.value
             index = root.index + 1
             '''计算最优解'''
-            op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
+            max_value = self.get_max_value(capacity, self.w[index:], self.v[index:])
+            op = value + max_value[0]
             # print 'op',op
             if self.maxV < op:
                 root.r_child = Node(op, value, capacity, index)
                 if root.r_child.index < self.deep_tree:
-                    self.recur_create_preorder(root.r_child)
+                    #print 'weeee',capacity, max_value
+                    if capacity >= max_value[1]:
+                        self.recur_create_preorder(root.r_child)
 
     def recur_preorder_trvalsal(self, root):
         '''递归实现先序遍历'''
