@@ -115,6 +115,8 @@ class Optimal_dps_tree():
             op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
             if self.maxV <= op:
                 root.l_child = Node(op, value, capacity, index)
+                if self.maxV == op:
+                    return
                 '''根据index来计算最优值'''
                 if root.l_child.index < self.deep_tree:
                     self.recur_create_preorder(root.l_child)
@@ -127,6 +129,8 @@ class Optimal_dps_tree():
         op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
         if self.maxV <= op:
             root.r_child = Node(op, value, capacity, index)
+            if self.maxV == op:
+                return
             if root.r_child.index < self.deep_tree:
                 self.recur_create_preorder(root.r_child)
 
@@ -142,7 +146,7 @@ class Optimal_dps_tree():
 def test():
     v = [5, 6, 3, 1]
     w = [4, 5, 2, 1]
-    capacity = 5
+    capacity = 9
     root = Node(0, 0, capacity)
     tree = Optimal_dps_tree(root, capacity, w, v)
     tree.recur_create_preorder(tree.root)
