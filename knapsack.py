@@ -51,15 +51,15 @@ def optimal_iteration(capacity, wNumbers, w, v):
 
 
 class Node():
-    def __init__(self, op=0,  value=0, capacity=0, wNumbers=0, l_child=None, r_child=None):
+    def __init__(self, op=0,  value=0, capacity=0, index=0, l_child=None, r_child=None):
         '''最优值'''
         self.optimal = op
         '''节点值'''
         self.value = value
         '''节点容量'''
         self.capacity = capacity
-        '''记录节点未选元素的位置，第i个记录为i'''
-        self.index = 0
+        '''记录树的层数'''
+        self.index = index
         self.l_child = l_child
         self.r_child = r_child
 
@@ -74,32 +74,67 @@ class Optimal_dps_tree():
         self.v = v
         '''记录解的最大值'''
         self.maxV = 0
+        self.deep_tree = len(w)
 
     def add_node(self, node):
         if self.root is None:
             self.root = node
             return
 
-    def recur_create_preorder(self, root):
+    def get_max_value(self, capacity, weights, values):
+        '''weights与values都为数组'''
+        '''需要计算values/weights并且从大到小排序'''
+        len1 = len(weights)
+        len2 = len(values)
+        if len1 != len2:
+            return
+        vw = map(lambda v1, w1: (v1, w1), values, weights)
+        vw.sort(lambda x, y: cmp(x[1]*0.1*10/x[0], y[1]*0.1*10/y[0]))
+        maxV = 0
+        for i in range(len1):
+            if capacity < vw[i][1]:
+                maxV += capacity*0.1*10/vw[i][1]*vw[i][0]
+                return maxV
+            else:
+                maxV += vw[i][0]
+                capacity -= vw[i][1]
+        return maxV
+
+    def recur_create_preorder(self,  root):
         '''通过递归使用合适的节点创建树'''
         if root is None:
             return
         '''需要一系列计算来创造节点'''
-        root.l_child = Node()
-        root.l_child.index = root.index + 1
-        '''根据index来计算最优值'''
-        if root.l_child.index < 3:
-            self.recur_create_preorder(root.l_child)
-        root.r_child = Node()
-        root.r_child.index = root.index + 1
-        if root.r_child.index < 3:
-            self.recur_create_preorder(root.r_child)
+        '''满足一定条件才创建左节点，不然返回'''
+        capacity = root.capacity - self.w[root.index]
+        if capacity >= 0:
+            value = root.value + self.v[root.index]
+            self.maxV = max(self.maxV, value)
+            index = root.index + 1
+            '''计算最优解'''
+            op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
+            if self.maxV <= op:
+                root.l_child = Node(op, value, capacity, index)
+                '''根据index来计算最优值'''
+                if root.l_child.index < self.deep_tree:
+                    self.recur_create_preorder(root.l_child)
+
+        '''满足一定条件才能创建右节点，不然返回'''
+        capacity = root.capacity
+        value = root.value
+        index = root.index + 1
+        '''计算最优解'''
+        op = value + self.get_max_value(capacity, self.w[index:], self.v[index:])
+        if self.maxV <= op:
+            root.r_child = Node(op, value, capacity, index)
+            if root.r_child.index < self.deep_tree:
+                self.recur_create_preorder(root.r_child)
 
     def recur_preorder_trvalsal(self, root):
         '''递归实现先序遍历'''
         if root is None:
             return
-        print root.index
+        print root.value
         self.recur_preorder_trvalsal(root.l_child)
         self.recur_preorder_trvalsal(root.r_child)
 
@@ -107,17 +142,12 @@ class Optimal_dps_tree():
 def test():
     v = [5, 6, 3, 1]
     w = [4, 5, 2, 1]
-    k = 8
-    j = 3
-    result = optimal_iteration(k, j, w, v)
-    print result
+    capacity = 5
+    root = Node(0, 0, capacity)
+    tree = Optimal_dps_tree(root, capacity, w, v)
+    tree.recur_create_preorder(tree.root)
+    tree.recur_preorder_trvalsal(tree.root)
 
 
 if __name__ == '__main__':
-    v = [5, 6, 3, 1]
-    tree = Optimal_dps_tree()
-    tree.root = Node(0)
-    tree.root.value = 0
-    tree.root.capacity =
-    tree.recur_create_preorder(tree.root)
-    tree.recur_preorder_trvalsal(tree.root)
+    test()
