@@ -28,9 +28,16 @@ def mem1():
     a = []
     for w1 in xrange(100000000):
         a.append(w1)
+        del w1
     print time()
 
+def add(param):
+    param += 1
+    print param
 if __name__ == "__main__":
+    param = 5
+    add(param)
+    print param
     '''
     print 'test way 1:just pass'
     mem(way=3)
@@ -42,4 +49,3 @@ if __name__ == "__main__":
     mem(way=3)
     sleep(20)
     '''
-    mem1()
