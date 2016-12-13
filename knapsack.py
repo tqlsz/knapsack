@@ -1,4 +1,6 @@
 # coding:utf-8
+import gc
+import numpy as np
 
 
 def optimal(k, j, w, v):
@@ -91,9 +93,9 @@ class Optimal_dps_tree():
         if len1 != len2:
             return None
         if weights is None or weights == [] or values is None:
-            return 0,0
+            return 0, 0
         maxV = 0
-        vw = map(lambda v1, w1: (v1, w1), values, weights)
+        vw = map(lambda v1, w1: [v1, w1], values, weights)
         vw.sort(lambda x, y: cmp(x[1]*0.1*10/x[0], y[1]*0.1*10/y[0]))
         for i in range(len1):
             if capacity < vw[i][1]:
@@ -104,7 +106,9 @@ class Optimal_dps_tree():
                 capacity -= vw[i][1]
         min_weights = min(weights)
         '''找出重量最轻，价格最贵的那个'''
-        return maxV,min_weights
+        del vw
+        # gc.collect()
+        return maxV, min_weights
 
     def get_maxV_by_w(self, capacity, weights, values):
         '''如果capacity小于最小重量的两倍，找出重量小于capacity，最大v'''
@@ -114,6 +118,8 @@ class Optimal_dps_tree():
         for (w1, v1) in zip(weights, values):
             if w1 <= capacity:
                 maxV = max(maxV, v1)
+            del (w1, v1)
+        # gc.collect()
         return maxV
 
     def recur_create_preorder(self,  root):
@@ -129,7 +135,7 @@ class Optimal_dps_tree():
             '''其中小于capacity，价值最高的v'''
             max_v = self.get_maxV_by_w(capacity, self.w[index:], self.v[index:])
             value = root.value + max_v
-            print value
+            # print value
             op = value
             root.l_child = Node(op, value, capacity, index+1)
             self.maxV = max(self.maxV, value)
@@ -149,7 +155,7 @@ class Optimal_dps_tree():
                     root.l_child = Node(op, value, capacity, index)
                     '''根据index来计算最优值'''
                     if root.l_child.index < self.deep_tree:
-                        #print 'sdfsdf', capacity, max_value
+                        # print 'sdfsdf', capacity, max_value
                         if capacity >= max_value[1]:
                             self.recur_create_preorder(root.l_child)
 
@@ -164,7 +170,7 @@ class Optimal_dps_tree():
             if self.maxV < op:
                 root.r_child = Node(op, value, capacity, index)
                 if root.r_child.index < self.deep_tree:
-                    #print 'weeee',capacity, max_value
+                    # print 'weeee',capacity, max_value
                     if capacity >= max_value[1]:
                         self.recur_create_preorder(root.r_child)
 

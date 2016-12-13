@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import knapsack
+import gc
 import sys
 from collections import namedtuple
 Item = namedtuple("Item", ['index', 'value', 'weight'])
 sys.setrecursionlimit(1500)
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
-
     # parse the input
     lines = input_data.split('\n')
 
