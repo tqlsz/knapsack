@@ -36,7 +36,9 @@ def solve_it(input_data):
     tree = knapsack.Optimal_dps_tree(root, capacity,\
             [x[2] for x in items], [x[1] for x in items])
     tree.recur_create_preorder(tree.root)
-    value= tree.maxV
+    value = int(tree.maxV)
+    for el in tree.max_index:
+        taken[int(el)] = 1
 
     '''
     for item in items:
