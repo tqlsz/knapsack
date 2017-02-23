@@ -208,8 +208,7 @@ class Tree():
             self.create_preorder1(root.r_child, deep_nums)
 
 def test():
-    for i in range(100000000):
-        pass
+    print 'test'
 
 if __name__ == '__main__':
     test()
