@@ -8,6 +8,7 @@ import tree
  (4) 没有键值相等的节点
 '''
 
+
 '''定义一个类继承Tree类'''
 
 
@@ -69,7 +70,7 @@ class BSTree(tree.Tree):
                     if father_node.l_child == temp:
                         father_node.l_child = temp.l_child
                     else:
-                        father_node.r_child = temp.r_child
+                        father_node.r_child = temp.l_child
                     temp = None
                 else:
                     right_node = temp.l_child
