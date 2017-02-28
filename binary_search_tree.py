@@ -48,30 +48,27 @@ class BSTree(tree.Tree):
         father_node = None
         while temp:
             temp_val = temp.get()
-            if node_val == temp_val:
+            if node_val < temp_val:
+                '''小于进入左子树查找'''
+                father_node = temp
+                temp = temp.l_child
+            elif node_val > temp_val:
+                '''大于进入右子树查找'''
+                father_node = temp
+                temp = temp.r_child
+            else:
                 '''找到节点'''
-                if temp.l_child is None and temp.r_child is None:
+                if temp.l_child is None or temp.r_child is None:
                     '''叶节点，直接删除'''
-                    if father_node is None:
+                    lr_node = temp.l_child if temp.l_child else temp.r_child
+                    if father_node is not None:
                         '''temp is root'''
-                        self.root = None
-                    else:
                         if father_node.l_child == temp:
-                            father_node.l_child = None
+                            father_node.l_child = lr_node
                         else:
-                            father_node.r_child = None
-                elif temp.l_child is None:
-                    if father_node.l_child == temp:
-                        father_node.l_child = temp.r_child
+                            father_node.r_child = lr_node
                     else:
-                        father_node.r_child = temp.r_child
-                    temp = None
-                elif temp.r_child is None:
-                    if father_node.l_child == temp:
-                        father_node.l_child = temp.l_child
-                    else:
-                        father_node.r_child = temp.l_child
-                    temp = None
+                        self.root = lr_node
                 else:
                     right_node = temp.l_child
                     father_right_node = None
@@ -79,37 +76,38 @@ class BSTree(tree.Tree):
                     while right_node.r_child:
                         father_right_node = right_node
                         right_node = right_node.r_child
-                    if father_node.l_child == temp:
-                        father_node.l_child = right_node
+                    if father_node is None:
+                        self.root = right_node
                     else:
-                        father_node.r_child = right_node
+                        if father_node.l_child == temp:
+                            father_node.l_child = right_node
+                        else:
+                            father_node.r_child = right_node
                     if father_right_node is not None:
                         father_right_node.r_child = right_node.l_child
-                    right_node.l_child = temp.l_child
+                        right_node.l_child = temp.l_child
                     right_node.r_child = temp.r_child
-                    temp = None
+
+                temp = None
                 return
-            elif node_val < temp_val:
-                father_node = temp
-                temp = temp.l_child
-            else:
-                father_node = temp
-                temp = temp.r_child
 
 
 def test():
     bstree = BSTree()
     import random
-    values = range(19)
-    values = random.sample(values, 19)
-    values = [15, 5, 4, 2, 3, 0, 13, 1, 18, 11, 8, 7, 17, 9, 12, 14, 16, 6, 10]
+    N = 2900
+    values = range(N)
+    values = random.sample(values, N)
+    # values = [15, 5, 4, 2, 3, 0, 13, 1, 18, 11, 8, 7, 17, 9, 12, 14, 16, 6, 10]
     nodes = [tree.Node(el) for el in values]
+
     print values
-    for i in range(19):
+    for i in range(N):
         bstree.add_node(nodes[i])
 
-    bstree.del_node(nodes[1])
-
-    bstree.recur_midorder_trvalsal(bstree.root)
+    for i in range(N):
+        bstree.del_node(nodes[i])
+        bstree.recur_midorder_trvalsal(bstree.root)
+        print '***************', nodes[i].get()
 if __name__ == '__main__':
     test()
