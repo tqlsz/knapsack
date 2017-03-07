@@ -92,10 +92,11 @@ class BSTree(tree.Tree):
                 return
 
 
+
 def test():
     bstree = BSTree()
     import random
-    N = 2900
+    N = 10
     values = range(N)
     values = random.sample(values, N)
     # values = [15, 5, 4, 2, 3, 0, 13, 1, 18, 11, 8, 7, 17, 9, 12, 14, 16, 6, 10]
@@ -105,7 +106,11 @@ def test():
     for i in range(N):
         bstree.add_node(nodes[i])
 
-    for i in range(N):
+    bstree.recur_preorder_trvalsal(bstree.root)
+
+    bstree.graph_tree()
+
+    for i in range(0):
         bstree.del_node(nodes[i])
         bstree.recur_midorder_trvalsal(bstree.root)
         print '***************', nodes[i].get()

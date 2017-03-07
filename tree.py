@@ -1,5 +1,7 @@
 # coding:utf-8
 
+import pygraphviz as pgv
+
 # 类节点
 
 
@@ -22,6 +24,8 @@ class Tree():
     # 初始化一棵树
     def __init__(self, node=None):
         self.root = node
+        self.A = pgv.AGraph(directed=True, strict=True, rankdir='TR')
+        self.A.node_attr['shape'] = 'circle'
 
     def add_node(self, node):
         my_queue = []
@@ -83,8 +87,35 @@ class Tree():
         if root is None:
             return
         print root.get()
-        self.recur_preorder_trvalsal(root.l_child)
-        self.recur_preorder_trvalsal(root.r_child)
+        l, r = None, None
+        if root.l_child:
+            self.A.add_edge(root.get(), root.l_child.get())
+            l = root.l_child.get()
+            self.recur_preorder_trvalsal(root.l_child)
+        if root.r_child:
+            self.A.add_edge(root.get(), root.r_child.get())
+            r = root.r_child.get()
+            self.recur_preorder_trvalsal(root.r_child)
+        if root.l_child or root.r_child:
+            if not root.l_child:
+                l = str(root.get()) + '-'
+                self.A.add_node(l, style='invis')
+                self.A.add_edge(root.get(), l, style='invis')
+            if not root.r_child:
+                r = str(root.get()) + '+'
+                self.A.add_node(r, style='invis')
+                self.A.add_edge(root.get(), r, style='invis')
+            mid = str(root.get()) + ' '
+            self.A.add_node(mid, style='invis')
+            self.A.add_edge(root.get(), mid, style='invis')
+            B = self.A.add_subgraph([l, mid, r], rank='same')
+            B.add_edge(l, mid, style='invis')
+            B.add_edge(mid, r, style='invis')
+
+
+    def graph_tree(self):
+        self.A.layout('dot')
+        self.A.draw('tree.ps')
 
     def stack_preorder_trvalsal(self, root):
         '''堆栈实现先序遍历'''
