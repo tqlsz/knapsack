@@ -112,29 +112,26 @@ class Tree():
             B.add_edge(l, mid, style='invis')
             B.add_edge(mid, r, style='invis')
 
-
     def graph_tree(self):
         self.A.layout('dot')
         self.A.draw('tree.ps')
 
     def stack_preorder_trvalsal(self, root):
+
         '''堆栈实现先序遍历'''
         stack = []
         temp_node = root
-        while temp_node:
-            print temp_node.get()
-            if temp_node.l_child is not None:
+        num = 0
+        while temp_node or stack:
+            if temp_node:
+                num += 1
+                print temp_node.get()
                 stack.append(temp_node)
                 temp_node = temp_node.l_child
             else:
-                if stack == []:
-                    return
                 temp_node = stack.pop()
-                while temp_node.r_child is None:
-                    if stack == []:
-                        return
-                    temp_node = stack.pop()
                 temp_node = temp_node.r_child
+        return num
 
     def recur_midorder_trvalsal(self, root):
         '''递归实现中序遍历'''
@@ -149,31 +146,14 @@ class Tree():
         temp_node = root
         my_stack = []
         while temp_node or my_stack:
-            if temp_node is not None:
+            if temp_node:
                 my_stack.append(temp_node)
                 temp_node = temp_node.l_child
             else:
                 temp_node = my_stack.pop()
                 print temp_node.get()
                 temp_node = temp_node.r_child
-        '''
-        while temp_node:
-            if temp_node.l_child:
-                my_stack.append(temp_node)
-                temp_node = temp_node.l_child
-            else:
-                print temp_node.get()
-                if my_stack == []:
-                    return
-                temp_node = my_stack.pop()
-                print temp_node.get()
-                while temp_node.r_child is None:
-                    if my_stack == []:
-                        return
-                    temp_node = my_stack.pop()
-                    print temp_node.get()
-                temp_node = temp_node.r_child
-        '''
+
     def recur_postorder_trvalsal(self, root):
         '''递归实现后序遍历'''
         if root is None:
